@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" 
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" 
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:http-policy="http://www.mulesoft.org/schema/mule/http-policy"
+	xmlns:http-transform="http://www.mulesoft.org/schema/mule/http-policy-transform"
+	xsi:schemaLocation="
+	http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+	http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+	http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	http://www.mulesoft.org/schema/mule/http-policy http://www.mulesoft.org/schema/mule/http-policy/current/mule-http-policy.xsd
+	http://www.mulesoft.org/schema/mule/http-policy-transform http://www.mulesoft.org/schema/mule/http-policy-transform/current/mule-http-policy-transform.xsd">
+
+	<http-policy:proxy name="allow-dynamic-resources-custom-policy">
+		<http-policy:source>
+		<try>
+		<logger level="DEBUG" doc:name="Logger" doc:id="0d7c1145-8807-456c-8bb5-b6a1a71c8768" message="Allow Dynamic Resource Custom Policy executing..." />
+		<set-variable value="{{{AllowedMethods}}}" doc:name="Set Config to Variable" doc:id="ced7d171-c4c3-4188-bde4-789c2fa3381f" variableName="allowedPath"/>
+			<logger level="DEBUG" doc:name="Logger" doc:id="e855e4f1-df88-4012-a36a-f10314fcb42f" message="#[vars.allowedPath]" />
+		<ee:transform doc:name="Transform Message" doc:id="461a6e63-f32b-4591-9905-99b754ed374f" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="policyValidation" ><![CDATA[%dw 2.0
+output application/json
+var path = message.attributes.method ++  ":" ++ message.attributes.requestUri
+var inputPath = (((vars.allowedPath replace " " with "") replace /^\[|\]$/ with "" replace "/*" with "(/.*)" ) replace "/w*" with "(/\w*)") splitBy ","
+---
+if(isEmpty(inputPath filter (path matches $)))false else true]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="a9c5a3c9-3e7f-48f9-bded-2b7018a9e175" >
+			<when expression="#[vars.policyValidation]">
+				<http-policy:execute-next/>
+			</when>
+			<otherwise >
+			    <logger level="DEBUG" doc:name="Logger" doc:id="a1b27a88-f3f5-4898-940e-d3f932776ac6" message="Allow Dynamic Resource Custom Policy Failure"/>		
+				<ee:transform doc:name="Error Response" doc:id="bdbd44f4-616d-471b-92ea-3c29d376da8c" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"error": "Resource Not Found - " ++ message.attributes.method ++ ":" ++ message.attributes.requestUri]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				 <http-transform:set-response statusCode="404">
+           <http-transform:body>#[payload]</http-transform:body>
+           <http-transform:headers>#[attributes.headers]</http-transform:headers>
+       </http-transform:set-response>
+			</otherwise>
+		</choice>
+		<logger level="DEBUG" doc:name="Logger" doc:id="9904a7ab-a1ee-4079-a4ee-505d20da9761" message="Completed Allow Dynamic Resource Custom Policy execution"/>		
+       </try>  
+       </http-policy:source>
+	</http-policy:proxy>
+</mule>
