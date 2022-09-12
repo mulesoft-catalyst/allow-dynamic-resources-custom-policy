@@ -38,3 +38,5 @@ This custom policy tries to solve the prblem of dynamic resource path by using t
   ## Step 1 - Create policy asset in exchange
   Login to anypoint.mulesoft.com -> Exchange -> Publish New Asset
   
+<img width="819" alt="step1-1" src="https://user-images.githubusercontent.com/44620039/189748395-1820e5c7-2996-40e4-beb7-4562718af84f.png">
+
