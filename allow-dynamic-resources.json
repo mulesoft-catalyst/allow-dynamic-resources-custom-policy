@@ -1,0 +1,24 @@
+{
+  "title": "Allow Dynamic Resources and  Methods",
+  "type": "object",
+  "description": "Filter Resource path and method by applying this policy.",
+  "properties": {
+    "AllowedMethods": {
+      "title": "Allowed Methods",
+      "type": "array",
+      "description": "The custom policy allows to validate incoming Methods and Resources against allowed values given by User.\nReplacement logic \n - Replace {path:.+|} or {+path} with * \n - Replace {any-uri-param} with w* \n - Replace any-uri-param with any-uri-param \n- Input all HTTP methods in Upper-case \n- URI Parameters are case sensitive \n\nExample:\nif your API spec has below URI paramaters and Methods \n\n- /cass/a-field/{field-id}:\n\n\tget:\n- /{+path}:\n\n\tget: \n- /field/with-cass: \n\n\tpost:\n\nReplace them by - \n- GET:/cass/a-field/w*\n- GET:/*\n- POST:/field/with-cass\n",
+      "items": {
+        "type": "string",
+        "pattern": "(^(GET)|^(POST)|^(PUT)|^(PATCH)|^(DELETE)):/.*$"
+      },
+      "minItems": 1
+    }
+  },
+  "unevaluatedProperties": false,
+  "@context": {
+    "@vocab": "anypoint://vocabulary/policy.yaml#",
+    "security": "anypoint://vocabulary/policy.yaml#"
+  },
+  "$id": "allow-dynamic-resources",
+  "$schema": "https://json-schema.org/draft/2019-09/schema"
+}

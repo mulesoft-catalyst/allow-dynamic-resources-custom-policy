@@ -1,0 +1,9 @@
+#%Policy Definition 0.1
+id: allow-dynamic-resources
+name: Allow Dynamic Resources
+description: The custom policy allows to validate incoming Methods and Resources against allowed values given by User
+category: Custom
+type: custom
+requiredCharacteristics: []
+providedCharacteristics:
+ - Allowed Methods

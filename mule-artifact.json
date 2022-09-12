@@ -1,0 +1,14 @@
+{
+	"configs": [
+		"template.xml"
+	],
+	"name": "Allow Dynamic Resources",
+	"minMuleVersion": "4.1.0",
+	"requiredProduct": "MULE_EE",
+	"classLoaderModelLoaderDescriptor": {
+		"id": "mule",
+		"attributes": {
+			
+		}
+	}
+}
