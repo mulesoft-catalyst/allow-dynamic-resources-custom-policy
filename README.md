@@ -78,7 +78,7 @@ In case the format is not correct the custom policy UI will throw error.
 Sample Request - 
 ```
 curl -k -X PUT \
-  https://demortfnginx.eastus.cloudapp.azure.com/test-dynamic-method/hello/abc \
+  https://{{APP-URI-BASE-PATH}}/hello/abc \
   -H 'Content-Type: application/json' \
   -d '{
         "hello": "mule"
