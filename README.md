@@ -96,3 +96,6 @@ Sample Response:
 - If you are using this policy then dont use APIKit module for validation since it does not support special annotations like {path:.+|} or {+path} in API specification file. 
 - This custom policy is suitable for HTTP Mule proxies. If you plan to use it with REST Mule proxies you will need to download the proxy from API Manager and deploy the jar file after removing the Validate Request module from the proxy http-proxy Mule configuration file. Validate request module currently is not able to process special annotation needed to define dynamic resources
 
+# Contributers
+- Amit Jha
+- Dinesh Ramalingam
